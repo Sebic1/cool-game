@@ -111,7 +111,44 @@ int genFloor(int roomAmount, int floorNumb){
                     diggerY = diggerPlanY;
                 }
             }
+            if(i > 1 && randNum(0,1) == 0){ // Makes a second coridoor originating from this room
+                int secondClosestRoomDist = 1000000;
+                int secondclosestRoom = 0;
+                int currentDist = 0;
+                for(int j = 0; j < i; j++){ // Find second closest room
+                    currentDist = strtLineDist((RoomOriginX[i]+RoomCornerX[i])/2,(RoomOriginY[i]+RoomCornerY[i])/2,(RoomOriginX[j]+RoomCornerX[j])/2,(RoomOriginY[j]+RoomCornerY[j])/2);
+                    if(currentDist < secondclosestRoomDist && currentDist < closestRoomDist){
+                        secondclosestRoom = j;
+                        secondclosestRoomDist = currentDist;
+                    }
+                }
+
+            }
+            goalX = (RoomOriginX[secondClosestRoom]+RoomCornerX[secondClosestRoom])/2;
+            goalY = (RoomOriginY[secondClosestRoom]+RoomCornerY[secondClosestRoomi])/2;
+            diggerX = (RoomOriginX[i]+RoomCornerX[i])/2;
+            diggerY = (RoomOriginY[i]+RoomCornerY[i])/2;
+            diggerPlanX; // The co-ordinates of where the digger plans to go
+            diggerPlanY;
+            bool diggerDir = 1; // 1 means X direction, 0 means y
+            while((diggerX != goalX)&&(diggerY != goalY)){
+                if(diggerDir && (diggerX != goalX)){
+                    diggerPlanX = randNum(diggerX,goalX);
+                    for(int a = diggerX; a < diggerPlanX; a++){
+                        floor[floorNumb][diggerY][a] = 2;
+                    }
+                    diggerX = diggerPlanX;
+                } else if(!diggerDir && (diggerY != goalY)) {
+                    diggerPlanY = randNum(diggerY,goalY);
+                    for(int a = diggerY; a < diggerPlanY; a++){
+                        floor[floorNumb][diggerY][a] = 2;
+                    }
+                    diggerY = diggerPlanY;
+                }
+            }
         }
+        // TODO:
+        // Dig out rooms!
     }
 }
 
