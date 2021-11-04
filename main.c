@@ -1,6 +1,7 @@
 #include <stblib.h>
 #include <stdio.h>
 #include <stdbool.h> 
+#include <math.h>
 
 #define FLOOR_AMOUNT 10
 #define FS_X 300 
@@ -12,6 +13,10 @@
 
 int randNum(min, max){  // I wonder what this does??
     return((rand() % (max-min))+min);
+}
+
+float strtLineDist(int Xa, int Ya, int Xb, int Yb){
+    return(sqrt(pow(Ya-Yb,2)+pow(Xa-Xb,2)));
 }
 
 int genFloor(int roomAmount, int floorNumb){
@@ -26,17 +31,17 @@ int genFloor(int roomAmount, int floorNumb){
     int RoomCornerY[];
     bool RGFail = 0;    // Room Generation Fail
     for(int i = 0; i < roomAmount; i++){
-        while(RGFail == 1){
+        while(RGFail == 1){ // Prevents overlapping rooms
             RoomOriginX[i] = 0;
             RoomOriginY[i] = 0;
             RoomCornerX[i] = 0;
             RoomCornerY[i] = 0;
             RGFail = 0;
-            RoomOriginX[i] = randNumb(1, FS_X-2);
-            RoomOriginY[i] = randNumb(1, FS_Y-2);
-            RoomCornerX[i] = randNumb(RoomOriginX[i]+MIN_RS_X,RoomOriginX[i]+MAX_RS_X);
-            RoomCornerY[i] = randNumb(RoomOriginY[i]+MIN_RS_Y,RoomOriginY[i]+MAX_RS_Y);
-            for(int j = 0; j < i; j++){
+            RoomOriginX[i] = randNum(1, FS_X-2);
+            RoomOriginY[i] = randNum(1, FS_Y-2);
+            RoomCornerX[i] = randNum(RoomOriginX[i]+MIN_RS_X,RoomOriginX[i]+MAX_RS_X);
+            RoomCornerY[i] = randNum(RoomOriginY[i]+MIN_RS_Y,RoomOriginY[i]+MAX_RS_Y);
+            for(int j = 0; j < i; j++){ 
                 if(((RoomOriginX[i] >= RoomOriginX[j])&&(RoomOriginX[i] <= RoomCornerX[j])||(RoomOriginX[j] >= RoomOriginX[i])&&(RoomOriginX[j] <= RoomCornerX[i]))&&((RoomOriginY[i] >= RoomOriginY[j])&&(RoomOriginY[i] <= RoomCornerY[j])||(RoomOriginY[j] >= RoomOriginY[i])&&(RoomOriginY[j] <= RoomCornerY[i]))){
                     FGFail = 1:
                 }
@@ -71,6 +76,40 @@ int genFloor(int roomAmount, int floorNumb){
                 //    #     #
                 //    o#####J
                 //
+            }
+        }
+        if (i > 0){ // Makes coridoors between rooms
+            int closestRoomDist = 1000000;
+            int closestRoom = 0;
+            int currentDist = 0;
+            for(int j = 0; j < i; j++){ // Find closest room
+                currentDist = strtLineDist((RoomOriginX[i]+RoomCornerX[i])/2,(RoomOriginY[i]+RoomCornerY[i])/2,(RoomOriginX[j]+RoomCornerX[j])/2,(RoomOriginY[j]+RoomCornerY[j])/2);
+                if(currentDist < closestRoomDist){
+                    closestRoom = j;
+                    closestRoomDist = currentDist;
+                }
+            }
+            int goalX = (RoomOriginX[closestRoom]+RoomCornerX[closestRoom])/2;
+            int goalY = (RoomOriginY[closestRoom]+RoomCornerY[closestRoomi])/2;
+            int diggerX = (RoomOriginX[i]+RoomCornerX[i])/2;
+            int diggerY = (RoomOriginY[i]+RoomCornerY[i])/2;
+            int diggerPlanX; // The co-ordinates of where the digger plans to go
+            int diggerPlanY;
+            bool diggerDir = 1; // 1 means X direction, 0 means y
+            while((diggerX != goalX)&&(diggerY != goalY)){
+                if(diggerDir && (diggerX != goalX)){
+                    diggerPlanX = randNum(diggerX,goalX);
+                    for(int a = diggerX; a < diggerPlanX; a++){
+                        floor[floorNumb][diggerY][a] = 2;
+                    }
+                    diggerX = diggerPlanX;
+                } else if(!diggerDir && (diggerY != goalY)) {
+                    diggerPlanY = randNum(diggerY,goalY);
+                    for(int a = diggerY; a < diggerPlanY; a++){
+                        floor[floorNumb][diggerY][a] = 2;
+                    }
+                    diggerY = diggerPlanY;
+                }
             }
         }
     }
