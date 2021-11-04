@@ -4,7 +4,7 @@
 
 #define FLOOR_AMOUNT 10
 #define FS_X 300 
-#define FS_Y 200    //FartShit_Yaught
+#define FS_Y 200    //FartShit_Yaght
 #define MAX_RS_X 30
 #define MAX_RS_Y 20
 #define MIN_RS_X 3
