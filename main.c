@@ -156,7 +156,50 @@ int genFloor(int roomAmount, int floorNumb){
                 }
             }
         }
+        spawnX = (RoomOriginX[0]+RoomCornerX[0])/2;
+        spawnY = (RoomOriginY[0]+RoomCornerY[0])/2;
     }
+}
+
+printScreen(screenLength,screenHeight){
+    char screenToPrint[];
+    int screenOriginX = playerX - screenLength/2;
+    int screenOriginY = playerY - screenHeight/2;
+    if(screenOriginX < 0){
+        screenOriginX = 0;
+    } else if(screenOriginX+screenLength > FS_X){
+        screenOriginX = FS_X - screenLength;
+    }
+    if(screenOriginX){
+        screenOriginY = 0;
+    } else if(screenOriginY+screenHeight > FS_Y){
+        screenOriginY = FS_Y - screenHeight;
+    }
+    int i = 0;
+    for(int y = screenOriginY; y < screenOriginY+screenHeight; y++){
+        for(int x = screenOriginX; x < screenOriginX+screenLength; x++){
+            switch (floor[playerZ][y][x]){
+                case 0:
+                    char screenToPrint[i] = ' ';
+                    break;
+                case 1:
+                    char screenToPrint[i] = '#';
+                    break;
+                case 2:
+                    char screenToPrint[i] = '.';
+                    break;
+            }
+            i++;
+        }
+        char screenToPrint[i] = '\n';
+        i++;
+    }
+    char screenToPrint[i] = '\0';
+    printf('%s\n',screenToPrint);
+}
+
+int gameLoop(){
+    
 }
 
 int main(){
@@ -164,4 +207,9 @@ int main(){
     int spawnY;
     int floor[FLOOR_AMOUNT][FS_Y][FS_X];
     genFloor(5,0);
+    int playerX = spawnX;
+    int playerY = spawnY;
+    int playerZ = 0;
+    printScreen(160,90);
+    gameLoop();
 }
