@@ -149,10 +149,19 @@ int genFloor(int roomAmount, int floorNumb){
         }
         // TODO:
         // Dig out rooms!
+        for(int i = 0; i < roomAmount; i++){
+            for(int y = roomOriginY[i]; y <= roomCornerY[i]; y++){
+                for(int x = roomOriginX[i]; x <= roomCornerX[i]; x++){
+                    floor[floorNumb][y][x] = 2;
+                }
+            }
+        }
     }
 }
 
 int main(){
+    int spawnX;
+    int spawnY;
     int floor[FLOOR_AMOUNT][FS_Y][FS_X];
     genFloor(5,0);
 }
