@@ -1,4 +1,4 @@
-#include <stblib.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h> 
 #include <math.h>
@@ -10,6 +10,9 @@
 #define MAX_RS_Y 20
 #define MIN_RS_X 3
 #define MIN_RS_Y 2
+#define MAX_ROOMS 300
+
+int floor[FLOOR_AMOUNT][FS_Y][FS_X];
 
 int randNum(min, max){  // I wonder what this does??
     return((rand() % (max-min))+min);
@@ -25,10 +28,10 @@ int genFloor(int roomAmount, int floorNumb){
             floor[floorNumb][i][j] = 1;
         }
     }
-    int RoomOriginX[];
-    int RoomOriginY[];
-    int RoomCornerX[];
-    int RoomCornerY[];
+    int RoomOriginX[MAX_ROOMS];
+    int RoomOriginY[MAX_ROOMS];
+    int RoomCornerX[MAX_ROOMS];
+    int RoomCornerY[MAX_ROOMS];
     bool RGFail = 0;    // Room Generation Fail
     for(int i = 0; i < roomAmount; i++){
         while(RGFail == 1){ // Prevents overlapping rooms
@@ -43,7 +46,7 @@ int genFloor(int roomAmount, int floorNumb){
             RoomCornerY[i] = randNum(RoomOriginY[i]+MIN_RS_Y,RoomOriginY[i]+MAX_RS_Y);
             for(int j = 0; j < i; j++){ 
                 if(((RoomOriginX[i] >= RoomOriginX[j])&&(RoomOriginX[i] <= RoomCornerX[j])||(RoomOriginX[j] >= RoomOriginX[i])&&(RoomOriginX[j] <= RoomCornerX[i]))&&((RoomOriginY[i] >= RoomOriginY[j])&&(RoomOriginY[i] <= RoomCornerY[j])||(RoomOriginY[j] >= RoomOriginY[i])&&(RoomOriginY[j] <= RoomCornerY[i]))){
-                    FGFail = 1:
+                    RGFail = 1;
                 }
                 //
                 // SENARIO 1:
@@ -90,7 +93,7 @@ int genFloor(int roomAmount, int floorNumb){
                 }
             }
             int goalX = (RoomOriginX[closestRoom]+RoomCornerX[closestRoom])/2;
-            int goalY = (RoomOriginY[closestRoom]+RoomCornerY[closestRoomi])/2;
+            int goalY = (RoomOriginY[closestRoom]+RoomCornerY[closestRoom])/2;
             int diggerX = (RoomOriginX[i]+RoomCornerX[i])/2;
             int diggerY = (RoomOriginY[i]+RoomCornerY[i])/2;
             int diggerPlanX; // The co-ordinates of where the digger plans to go
@@ -111,15 +114,18 @@ int genFloor(int roomAmount, int floorNumb){
                     diggerY = diggerPlanY;
                 }
             }
+            int secondClosestRoomDist = 1000000;
+            int secondClosestRoom = 0;
+            int currentDist = 0;
             if(i > 1 && randNum(0,1) == 0){ // Makes a second coridoor originating from this room
-                int secondClosestRoomDist = 1000000;
-                int secondclosestRoom = 0;
-                int currentDist = 0;
+                secondClosestRoomDist = 1000000;
+                secondClosestRoom = 0;
+                currentDist = 0;
                 for(int j = 0; j < i; j++){ // Find second closest room
                     currentDist = strtLineDist((RoomOriginX[i]+RoomCornerX[i])/2,(RoomOriginY[i]+RoomCornerY[i])/2,(RoomOriginX[j]+RoomCornerX[j])/2,(RoomOriginY[j]+RoomCornerY[j])/2);
-                    if(currentDist < secondclosestRoomDist && currentDist < closestRoomDist){
-                        secondclosestRoom = j;
-                        secondclosestRoomDist = currentDist;
+                    if(currentDist < secondClosestRoomDist && currentDist < closestRoomDist){
+                        secondClosestRoom = j;
+                        secondClosestRoomDist = currentDist;
                     }
                 }
 
@@ -203,9 +209,8 @@ int gameLoop(){
 }
 
 int main(){
-    int spawnX;
-    int spawnY;
-    int floor[FLOOR_AMOUNT][FS_Y][FS_X];
+    int spawnX = 0;
+    int spawnY = 0;
     genFloor(5,0);
     int playerX = spawnX;
     int playerY = spawnY;
