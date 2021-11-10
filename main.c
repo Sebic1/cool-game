@@ -26,7 +26,13 @@ int playerZ;
 
 int randNum(int min, int max){  // I wonder what this does??
     srand(time(NULL));
-    return((rand() % (max-min))+min);
+    if(min < max){
+        return((rand() % (max-min))+min);
+    } else if(max < min){
+        return((rand() % (min-max))+max);
+    } else {
+        return min;
+    }
 }
 
 float strtLineDist(int Xa, int Ya, int Xb, int Yb){
@@ -126,7 +132,6 @@ int genFloor(int roomAmount, int floorNumb){
         if(DEBUG_MODE){
             printf("room stuff %d: %d %d %d %d\n",i,RoomOriginX[i],RoomOriginY[i],RoomCornerX[i],RoomCornerY[i]);
         }
-        /*
         if (i > 0){ // Makes coridoors between rooms
             int closestRoomDist = 1000000;
             int closestRoom = 0;
@@ -199,7 +204,6 @@ int genFloor(int roomAmount, int floorNumb){
                 }
             }
         }
-        */
     }
     // Dig out rooms!
     for(int i = 0; i < roomAmount; i++){
@@ -266,7 +270,18 @@ int printScreen(int screenLength, int screenHeight){
 }
 
 int gameLoop(){
-    getchar();
+    char playerInput[];
+    scanf("%s",&playerInput);
+    if (playerInput == "up" && playerY-1 > 0){
+        playerY = playerY - 1;
+    } else if (playerInput == "down" && playerY+1 <= FS_Y){
+        playerY = playerY + 1;
+    } else if (playerInput == "left" && playerX-1 > 0){
+        playerX = playerX - 1;
+    } else if (playerInput == "right" && playerX+1 <= FS_X){
+        playerX = playerX + 1;
+    }
+    printScreen(SCREEN_X,SCREEN_Y);
     getchar();
 }
 
