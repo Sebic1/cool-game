@@ -272,16 +272,17 @@ int printScreen(int screenLength, int screenHeight){
 int gameLoop(){
     char playerInput[];
     scanf("%s",&playerInput);
-    if (playerInput == "up" && playerY-1 > 0){
+    if (playerInput == "up" && playerY-1 > 0 && floor[playerZ][playerY-1][playerX] == 2){
         playerY = playerY - 1;
-    } else if (playerInput == "down" && playerY+1 <= FS_Y){
+    } else if (playerInput == "down" && playerY+1 <= FS_Y && floor[playerZ][playerY+1][playerX] == 2){
         playerY = playerY + 1;
-    } else if (playerInput == "left" && playerX-1 > 0){
+    } else if (playerInput == "left" && playerX-1 > 0 && floor[playerZ][playerY][playerX-1] == 2){
         playerX = playerX - 1;
-    } else if (playerInput == "right" && playerX+1 <= FS_X){
+    } else if (playerInput == "right" && playerX+1 <= FS_X && floor[playerZ][playerY][playerX+1] == 2){
         playerX = playerX + 1;
     }
     printScreen(SCREEN_X,SCREEN_Y);
+    gameLoop();
     getchar();
 }
 
